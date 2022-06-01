@@ -84,7 +84,7 @@ const Post = ({ post }: Props) => {
     <Link href={`/post/${post.id}`}>
       <div className="flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-md hover:shadow-xl">
         {/* votes */}
-        <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400 ">
+        <div className="relative flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 px-1 py-4 text-gray-400 lg:p-4">
           <ArrowUpIcon
             className={`voteButton hover:text-green-400 ${
               vote && 'text-red-400'
@@ -116,31 +116,33 @@ const Post = ({ post }: Props) => {
           </div>
           {/* body */}
           <div className="py-4">
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p className="mt-2 text-sm font-light">{post.body}</p>
+            <h2 className="text-sm font-semibold lg:text-xl">{post.title}</h2>
+            <p className="mt-2 text-xs font-light lg:text-sm">{post.body}</p>
           </div>
           {/* image */}
-          <img className="w-full" src={post.image} alt="" />
+          <img className="w-[100%]" src={post.image} alt={post.title} />
           {/* fotter */}
-          <div className="my-2 flex space-x-4 text-gray-400">
+          <div className="my-2 flex space-x-2 text-gray-400 lg:space-x-4">
             <div className="postIconBtn">
-              <ChatAltIcon className="h-6 w-6" />
-              <p className="">{post.comment?.length ?? 0} Comments</p>
+              <ChatAltIcon className="h-4 w-4 lg:h-6 lg:w-6" />
+              <p className="text-xs lg:text-sm">
+                {post.comment?.length ?? 0} Comments
+              </p>
             </div>
             <div className="postIconBtn">
-              <GiftIcon className="h-6 w-6" />
+              <GiftIcon className="h-4 w-4 lg:h-6 lg:w-6" />
               <p className="hidden sm:inline">Award</p>
             </div>
             <div className="postIconBtn">
-              <ShareIcon className="h-6 w-6" />
+              <ShareIcon className="h-4 w-4 lg:h-6 lg:w-6" />
               <p className="hidden sm:inline">Share</p>
             </div>
             <div className="postIconBtn">
-              <BookmarkIcon className="h-6 w-6" />
+              <BookmarkIcon className="h-4 w-4 lg:h-6 lg:w-6" />
               <p className="hidden sm:inline">Save</p>
             </div>
             <div className="postIconBtn">
-              <DotsHorizontalIcon className="h-6 w-6" />
+              <DotsHorizontalIcon className="h-4 w-4 lg:h-6 lg:w-6" />
             </div>
           </div>
         </div>
