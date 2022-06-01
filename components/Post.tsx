@@ -34,26 +34,18 @@ const Post = ({ post }: Props) => {
     refetchQueries: [GET_VOTES_BY_POST_ID, 'getVoteByPostId'],
   })
 
-  useEffect(() => {
-    const votes: Vote[] = data?.getVoteByPostId
-    const vote = votes?.find(
-      (vote) => vote.username == session?.user?.name
-    )?.upvote
-    setVote(vote)
-  }, [data])
-
   const upVote = async (isUpVote: boolean) => {
     const notification = toast.loading('Voting ...')
     if (!session) {
-      toast.error('You need to be logged in to vote !', { id: notification })
+      toast.error("You'll need to  sign in to Vote !", { id: notification })
       return
     }
     if (vote && isUpVote) {
       toast.success('You already voted !', { id: notification })
       return
     }
-    if (vote === false && isUpVote) {
-      toast.success('Wrong vote !', { id: notification })
+    if (vote === false && !isUpVote) {
+      toast.success('You already voted !', { id: notification })
       return
     }
 
@@ -66,6 +58,14 @@ const Post = ({ post }: Props) => {
     })
     toast.success('Successlully voted !', { id: notification })
   }
+
+  useEffect(() => {
+    const votes: Vote[] = data?.getVoteByPostId
+    const vote = votes?.find(
+      (vote) => vote.username == session?.user?.name
+    )?.upvote
+    setVote(vote)
+  }, [data])
 
   const displayVote = (data: any) => {
     const votes: Vote[] = data?.getVoteByPostId
