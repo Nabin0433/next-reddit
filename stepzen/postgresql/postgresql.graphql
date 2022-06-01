@@ -1,0 +1,249 @@
+type Comment {
+  created_at: DateTime
+  id: ID!
+  post_id: ID
+  text: String
+  username: String
+}
+
+type Post {
+  body: String
+  created_at: DateTime
+  id: ID!
+  image: String
+  subreddit_id: ID
+  title: String
+  username: String
+  vote: [Vote]
+    @materializer(
+      query: "getVoteByPostId"
+      arguments: [{ name: "post_id", field: "id" }]
+    )
+  comment: [Comment]
+    @materializer(
+      query: "getCommentByPostId"
+      arguments: [{ name: "post_id", field: "id" }]
+    )
+  subreddit: [Subreddit]
+    @materializer(
+      query: "getSubredditListById"
+      arguments: [{ name: "id", field: "subreddit_id" }]
+    )
+}
+
+type Subreddit {
+  created_at: DateTime
+  id: ID!
+  topic: String
+}
+
+type Vote {
+  created_at: DateTime
+  id: ID!
+  post_id: ID
+  upvote: Boolean
+  username: String
+}
+
+type Query {
+  getCommentList: [Comment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "comment"
+      configuration: "postgresql_config"
+    )
+  getCommentByPostId(post_id: ID!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "comment" where "post_id" = $1
+      order by "created_at" desc
+      """
+      configuration: "postgresql_config"
+    )
+  getVoteByPostId(post_id: ID!): [Vote]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "vote" where "post_id" = $1
+      order by "created_at" desc
+      """
+      configuration: "postgresql_config"
+    )
+  """
+  This query is an example of how to simply paginate your responses.
+  """
+  getPaginatedCommentList(first: Int!, after: Int!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "public"."comment" limit $1 offset $2
+      """
+      configuration: "postgresql_config"
+    )
+  """
+  In this example, a single query parameter is passed. If the request to the DB will
+  return at most one value you can remove the square brackets from the result.
+  """
+  getCommentByPost_id(post_id: ID!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "public"."comment" where "post_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  """
+  In this example, two query parameters are passed. If the request to the DB will
+  return at most one value you can remove the square brackets from the result.
+  """
+  getCommentByPost_idAndText(post_id: ID!, text: String!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "public"."comment" where "post_id" = $1 and "text" = $2
+      """
+      configuration: "postgresql_config"
+    )
+  getPostList: [Post]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select *, "post".id as id from "post"
+      join "subreddit" on "subreddit"."id" = "post"."subreddit_id"
+      order by "post"."created_at" desc
+      """
+      configuration: "postgresql_config"
+    )
+  getPostListByTopic(topic: String!): [Post]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select *, "post".id as id from "post"
+      join "subreddit" on "subreddit"."id" = "post"."subreddit_id"
+      where "subreddit"."topic" = $1
+      order by "post"."created_at" desc
+      """
+      configuration: "postgresql_config"
+    )
+  getPostListById(post_id: ID!): Post
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "post"
+      where "post"."id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  getSubredditList: [Subreddit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "subreddit"
+      configuration: "postgresql_config"
+    )
+
+  getSubredditListByTopic(topic: String!): [Subreddit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      select * from "subreddit" where "topic" = $1
+      """
+      configuration: "postgresql_config"
+    )
+
+  getSubredditListWithLimit(limit: Int!): [Subreddit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      select * from "subreddit"
+      order by "created_at" desc
+      limit $1
+      """
+      configuration: "postgresql_config"
+    )
+
+  getSubredditListById(id: ID!): [Subreddit]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      select * from "subreddit" where "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  getVoteList: [Vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      configuration: "postgresql_config"
+    )
+}
+
+type Mutation {
+  """
+  In this mutation example you can see how to do a mutation to insert data in the database.
+  """
+  insertPost(
+    image: String!
+    body: String!
+    subreddit_id: ID!
+    title: String!
+    username: String!
+  ): Post
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "post"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+
+  insertSubreddit(topic: String!): Subreddit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "subreddit"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+
+  insertComment(post_id: ID!, username: String!, text: String!): Comment
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "comment"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  insertVote(post_id: ID!, username: String!, upvote: Boolean!): Vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "vote"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  """
+  In this mutation example you can see how to do a mutation to delete data from the database.
+  """
+  deletePost(
+    image: String!
+    id: ID!
+    body: String!
+    subreddit_id: ID!
+    title: String!
+    username: String!
+  ): Post
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      table: "post"
+      dml: DELETE
+      configuration: "postgresql_config"
+    )
+}
