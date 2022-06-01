@@ -120,7 +120,7 @@ const Post = ({ post }: Props) => {
             <p className="mt-2 text-xs font-light lg:text-sm">{post.body}</p>
           </div>
           {/* image */}
-          <img className="w-[100%]" src={post.image} alt={post.title} />
+          <img className="w-[100%]" src={post.image} alt="" />
           {/* fotter */}
           <div className="my-2 flex space-x-2 text-gray-400 lg:space-x-4">
             <div className="postIconBtn">
