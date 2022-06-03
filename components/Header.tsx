@@ -20,7 +20,7 @@ const Header = () => {
   const { data: session } = useSession()
 
   return (
-    <div className="sticky top-0 z-50 flex items-center bg-white px-4 py-2 shadow-sm">
+    <div className="sticky top-0 z-50 flex items-center space-x-2 bg-white px-2 py-2 shadow-sm lg:space-x-3 lg:px-4">
       <div className="relative z-50 h-8 w-14 flex-shrink-0 cursor-pointer lg:h-10 lg:w-20 ">
         <Link href="/">
           <Image
@@ -60,13 +60,13 @@ const Header = () => {
         <SpeakerphoneIcon className="icon" />
       </div>
       {/* mobile */}
-      <div className="ml-5 flex items-center text-gray-500 lg:hidden">
+      {/* <div className="ml-5 mr-2 flex items-center text-gray-500 lg:hidden">
         <MenuIcon className="icon" />
-      </div>
+      </div> */}
       {/* sign in */}
       {!session && (
         <div
-          className="hidden cursor-pointer items-center space-x-2 border border-gray-100 p-2 lg:flex"
+          className="flex cursor-pointer items-center space-x-2 border border-gray-100 p-1 text-xs lg:p-2 lg:text-sm"
           onClick={() => signIn()}
         >
           <div className="relative h-5 w-5 flex-shrink-0">
@@ -83,7 +83,7 @@ const Header = () => {
       {/* sign out */}
       {session && (
         <div
-          className="hidden cursor-pointer items-center space-x-2 border border-gray-100 p-2 lg:flex"
+          className="flex cursor-pointer items-center space-x-2 border border-gray-100 p-1 text-xs lg:p-2 lg:text-sm"
           onClick={() => signOut()}
         >
           <div className="relative h-5 w-5 flex-shrink-0">
