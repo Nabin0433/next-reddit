@@ -1,5 +1,5 @@
 # Preview 
-  [demo](https://next-reddit-9h9ae0fuw-nabin0433.vercel.app/)
+  [demo](https://next-reddit-xi.vercel.app/)
 
 # Next.js + Tailwind CSS Example
 
